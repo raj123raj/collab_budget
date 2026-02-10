@@ -1,0 +1,57 @@
+name: PHP CI/CD for XAMPP
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Check PHP syntax
+        uses: mlocati/check-php-syntax@v1
+        with:
+          directory: .
+          fail-on-warnings: true
+
+  deploy-to-xampp:
+    needs: build-and-test
+    runs-on: self-hosted   # This runner is your Windows + XAMPP machine
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to XAMPP htdocs
+        shell: powershell
+        run: |
+          $source = "$(Get-Location)"
+          $target = "D:\Xampp1\htdocs\collab-budget"
+
+          if (!(Test-Path $target)) {
+            New-Item -ItemType Directory -Path $target | Out-Null
+          }
+
+          robocopy $source $target /MIR /XD ".git" ".github" "sql" /XF ".gitignore"
+
+          if ($LASTEXITCODE -ge 8) {
+            Write-Error "robocopy failed with exit code $LASTEXITCODE"
+            exit 1
+          }
+
+      - name: Done
+        shell: powershell
+        run: |
+          Write-Host "Deployed latest code to D:\Xampp1\htdocs\collab-budget"
