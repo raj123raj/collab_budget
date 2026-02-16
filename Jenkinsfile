@@ -41,10 +41,16 @@ pipeline {
         
                   robocopy "%SRC%" "%DEST%" /MIR /XD ".git" ".github" "sql" /XF ".gitignore"
         
-                  if %ERRORLEVEL% GEQ 8 (
-                    echo Robocopy failed with exit code %ERRORLEVEL%
-                    exit /b %ERRORLEVEL%
-                  )
+                  set RC=%ERRORLEVEL%
+                  echo Robocopy exit code: %RC%
+                
+                  if %RC% GEQ 8 (
+                      echo Robocopy failed with exit code %RC%
+                      exit /b %RC%
+                 )
+                
+                 rem For 0–7, treat as success for Jenkins
+                 exit /b 0
                 '''
             }
         }
