@@ -27,7 +27,7 @@ pipeline {
             steps {
                 // Copy workspace to D:\Xampp1\htdocs\collab-budget
                 bat '''
-                  set SRC=%WORKSPACE%				  
+                  set "SRC=%WORKSPACE%"
                   set DEST=D:\\Xampp1\\htdocs\\collab-budget
 
                   if not exist "%DEST%" (
