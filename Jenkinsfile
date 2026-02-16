@@ -25,17 +25,22 @@ pipeline {
 
         stage('Deploy to XAMPP') {
             steps {
-                // Copy workspace to D:\Xampp1\htdocs\collab-budget
                 bat '''
-                  set "SRC=%WORKSPACE%"
-                  set DEST=D:\\Xampp1\\htdocs\\collab-budget
-
+                  rem Get workspace and trim any trailing spaces
+                  set "TMP=%WORKSPACE%"
+                  for /f "tokens=* delims= " %%A in ("%TMP%") do set "SRC=%%A"
+        
+                  set "DEST=D:\\Xampp1\\htdocs\\collab-budget"
+        
                   if not exist "%DEST%" (
                     mkdir "%DEST%"
                   )
+        
                   echo SRC=[%SRC%]
                   echo DEST=[%DEST%]
+        
                   robocopy "%SRC%" "%DEST%" /MIR /XD ".git" ".github" "sql" /XF ".gitignore"
+        
                   if %ERRORLEVEL% GEQ 8 (
                     echo Robocopy failed with exit code %ERRORLEVEL%
                     exit /b %ERRORLEVEL%
