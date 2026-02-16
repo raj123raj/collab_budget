@@ -33,7 +33,8 @@ pipeline {
                   if not exist "%DEST%" (
                     mkdir "%DEST%"
                   )
-
+                  echo SRC=[%SRC%]
+                  echo DEST=[%DEST%]
                   robocopy "%SRC%" "%DEST%" /MIR /XD ".git" ".github" "sql" /XF ".gitignore"
                   if %ERRORLEVEL% GEQ 8 (
                     echo Robocopy failed with exit code %ERRORLEVEL%
