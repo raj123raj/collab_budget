@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    triggers {
-        // Poll Git every 5 minutes; or configure a GitHub webhook instead
-        pollSCM('H * * * *')
-    }
 
     stages {
         stage('Checkout') {
