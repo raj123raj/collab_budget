@@ -2,7 +2,7 @@
 $host = 'localhost';
 $db   = 'collab_budget';
 $user = 'root';
-$pass = 'mysql'; // default XAMPP
+$pass = ''; // default XAMPP
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
